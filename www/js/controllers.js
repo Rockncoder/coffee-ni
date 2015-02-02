@@ -123,4 +123,7 @@ angular.module('starter.controllers', [])
         //ListingsService.get(currentPage).then(function (listings) {
         //    $scope.listings = listings;
         //});
+    })
+    .controller('DetailsController', function ($scope, $stateParams) {
+        $scope.id = $stateParams.id;
     });
