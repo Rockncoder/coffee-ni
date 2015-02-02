@@ -1,8 +1,11 @@
 <ion-view view-title="Listings">
     <ion-content >
         <ion-list>
-            <ion-item ng-repeat="item in listings">
+            <ion-item ng-repeat="item in listings" href="#/app/details/{{item.listingId}}">
                 <div>{{item.businessName}}</div>
+                <div>{{item.distance}} miles</div>
+                <div>{{item.street}} {{item.city}}</div>
+
 
             </ion-item>
         </ion-list>
