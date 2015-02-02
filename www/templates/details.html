@@ -1,6 +1,19 @@
 <ion-view view-title="Coffee Shop">
     <ion-content>
-        <h1>details</h1>
-        <h2>{{id}}</h2>
+        <div class="card">
+            <div class="item item-divider text-center">
+                <h2>{{biz.businessName}}</h2>
+            </div>
+            <div class="item text-center">
+                <div><strong>{{biz.street}}</strong></div>
+                <div><strong>{{biz.city}}, {{biz.state}} {{biz.zip}}</strong></div>
+            </div>
+            <div class="item  text-center">
+                <a class="item" href="tel:{{biz.phone}}" style="font-size: 150%;">
+                    <i class="icon ion-ios7-telephone" style="font-size: 150%;"></i>
+                    Call {{biz.phone}}
+                </a>
+            </div>
+        </div>
     </ion-content>
 </ion-view>

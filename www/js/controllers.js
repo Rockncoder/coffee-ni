@@ -1,7 +1,9 @@
 angular.module('starter.controllers', [])
     .service('ListingsService', function ($http, $q) {
+        var dictionary = {};
         return {
-            get: get
+            get: get,
+            getById: getById
         };
 
         function filterOutMetaData(data) {
@@ -26,6 +28,16 @@ angular.module('starter.controllers', [])
             }
         }
 
+        function convertListingsToDictionary(listings){
+            var ndx, biz;
+            for(ndx=0; ndx < listings.length; ndx +=1){
+                biz = listings[ndx];
+                if(!dictionary[biz.listingId]){
+                    dictionary[biz.listingId] = biz;
+                }
+            }
+        }
+
         function get(pageNum) {
             var deferred = $q.defer(),
                 page = 'data/page' + pageNum + '.json';
@@ -34,10 +46,18 @@ angular.module('starter.controllers', [])
             $http.get(page)
                 .then(function (res) {
                     var listings = filterOutMetaData(res.data);
+                    convertListingsToDictionary(listings);
                     deferred.resolve(listings);
                 });
 
             return deferred.promise;
+        }
+
+        function getById(id) {
+            if(dictionary[id]){
+                return dictionary[id];
+            }
+            return null;
         }
     })
 
@@ -124,6 +144,7 @@ angular.module('starter.controllers', [])
         //    $scope.listings = listings;
         //});
     })
-    .controller('DetailsController', function ($scope, $stateParams) {
+    .controller('DetailsController', function ($scope, $stateParams, ListingsService) {
         $scope.id = $stateParams.id;
+        $scope.biz = ListingsService.getById($stateParams.id)
     });
