@@ -49,4 +49,12 @@ angular.module('starter.controllers', [])
 
     .controller('ListingsController', function ($scope) {
         $scope.message = "Hello San Francisco";
+        $scope.listings = [
+            {businessName: "alpha"},
+            {businessName: "beta"},
+            {businessName: "gamma"},
+            {businessName: "delta"},
+            {businessName: "epsilon"},
+            {businessName: "iota"}
+        ];
     });
