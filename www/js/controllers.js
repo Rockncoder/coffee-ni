@@ -1,4 +1,43 @@
 angular.module('starter.controllers', [])
+    .service('ListingsService', function ($http, $q) {
+        return {
+            get: get
+        };
+
+        function filterOutMetaData(data) {
+            var meta, listings;
+
+            if (data && data.searchResult && data.searchResult.metaProperties) {
+                meta = data.searchResult.metaProperties;
+
+                if (meta.resultCode === "Success") {
+                    listings = data.searchResult.searchListings.searchListing;
+                    if (!listings) {
+                        listings = [];
+                        listings.totalAvailable = 0;
+                        listings.totalPages = 0;
+                        return listings;
+                    }
+
+                    listings.totalAvailable = meta.totalAvailable;
+                    listings.totalPages = Math.ceil(listings.totalAvailable / 20);
+                    return listings;
+                }
+            }
+        }
+
+        function get(pageNum) {
+            var deferred = $q.defer();
+
+            $http.get('data/page' + pageNum + '.json')
+                .then(function (res) {
+                    var listings = filterOutMetaData(res.data);
+                    deferred.resolve(listings);
+                });
+
+            return deferred.promise;
+        }
+    })
 
     .controller('AppCtrl', function ($scope, $ionicModal, $timeout) {
         // Form data for the login modal
@@ -47,14 +86,19 @@ angular.module('starter.controllers', [])
     .controller('PlaylistCtrl', function ($scope, $stateParams) {
     })
 
-    .controller('ListingsController', function ($scope) {
+    .controller('ListingsController', function ($scope, ListingsService) {
         $scope.message = "Hello San Francisco";
-        $scope.listings = [
-            {businessName: "alpha"},
-            {businessName: "beta"},
-            {businessName: "gamma"},
-            {businessName: "delta"},
-            {businessName: "epsilon"},
-            {businessName: "iota"}
-        ];
+        //$scope.listings = [
+        //    {businessName: "alpha"},
+        //    {businessName: "beta"},
+        //    {businessName: "gamma"},
+        //    {businessName: "delta"},
+        //    {businessName: "epsilon"},
+        //    {businessName: "iota"}
+        //];
+        $scope.listings = [];
+
+        ListingsService.get(1).then(function (listings) {
+            $scope.listings = listings;
+        });
     });
