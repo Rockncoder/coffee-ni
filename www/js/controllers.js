@@ -27,9 +27,11 @@ angular.module('starter.controllers', [])
         }
 
         function get(pageNum) {
-            var deferred = $q.defer();
+            var deferred = $q.defer(),
+                page = 'data/page' + pageNum + '.json';
 
-            $http.get('data/page' + pageNum + '.json')
+            console.log(page);
+            $http.get(page)
                 .then(function (res) {
                     var listings = filterOutMetaData(res.data);
                     deferred.resolve(listings);
@@ -97,8 +99,28 @@ angular.module('starter.controllers', [])
         //    {businessName: "iota"}
         //];
         $scope.listings = [];
+        $scope.canShowMore = true;
+        var currentPage = 1;
+        var maxPage = 3;
+        $scope.loadMore = function () {
+            console.log("Need to load more: " + currentPage);
 
-        ListingsService.get(1).then(function (listings) {
-            $scope.listings = listings;
-        });
+            if ($scope.canShowMore) {
+                ListingsService.get(currentPage).then(function (listings) {
+                    // add the listings to current listings
+                    $scope.listings = $scope.listings.concat(listings);
+                    // let ionic know we've fetched the data
+                    $scope.$broadcast('scroll.infiniteScrollComplete');
+                });
+                currentPage++;
+            }
+            // check to see if any more to show
+            if (currentPage >= maxPage) {
+                $scope.canShowMore = false;
+            }
+        };
+
+        //ListingsService.get(currentPage).then(function (listings) {
+        //    $scope.listings = listings;
+        //});
     });
